@@ -66,7 +66,7 @@ void handleRoot() {
   html += "<label>Speed: </label><input type='range' min='-51' max='51' value='" + String(motorSpeed) + "' id='speedSlider' oninput='updateSpeed(this.value)' style='transform: rotate(270deg); width: 200px; margin-top: 50px;'>";
   html += "</div>";
   html += "<br><br>";
-  html += "<label>Steering Angle: </label><input type='range' min='45' max='135' step='5'  value='" + String(steeringAngle) + "' id='steeringSlider' oninput='updateSteeringAngle(this.value)'>";
+  html += "<label>Steering Angle: </label><input type='range' min='0' max='' step='10'  value='" + String(steeringAngle) + "' id='steeringSlider' oninput='updateSteeringAngle(this.value)'>";
   html += "<script>";
   html += "function updateSpeed(val) {";
   html += "  fetch('/setSpeed?value=' + val * 5);";
@@ -75,15 +75,6 @@ void handleRoot() {
   html += "  fetch('/setSteeringAngle?angle=' + angle);";
   html += "  document.getElementById('steeringSlider').value = angle;";
   html += "}";
-  html += "let lastAngle = 0;";
-  html += "function returnToCenter() {";
-  html += "  setInterval(function() {";
-  html += "    let currentAngle = parseInt(document.getElementById('steeringSlider').value);";
-  html += "    if (currentAngle > 90) {currentAngle -= 5; updateSteeringAngle(currentAngle);}";
-  html += "    if (currentAngle < 90) {currentAngle += 5; updateSteeringAngle(currentAngle);}";
-  html += "  }, 100);"; 
-  html += "}";
-  html += "returnToCenter();";
   html += "</script>";
   html += "</body></html>";
   server.send(200, "text/html", html);
@@ -104,7 +95,6 @@ void handleSetSpeed() {
 void handleSetSteeringAngle() {
   if (server.hasArg("angle")) {
     steeringAngle = server.arg("angle").toInt();
-    steeringAngle = constrain(steeringAngle, 45, 135);
     myServo.write(steeringAngle);
     server.send(200, "text/plain", "Steering angle set to " + String(steeringAngle));
   } else {
