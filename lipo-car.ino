@@ -12,6 +12,9 @@ int SERVO_PIN = D0;
 
 int motorSpeed = 0;
 int steeringAngle = 90;
+unsigned long lastAliveTime = 0;
+const unsigned long timeout = 1100;
+
 
 const char *ssid = "LiPo CAR";
 const char *password = "12345678";
@@ -35,6 +38,7 @@ void setup()
   server.on("/", handleRoot);
   server.on("/setSpeed", handleSetSpeed);
   server.on("/setSteeringAngle", handleSetSteeringAngle);
+  server.on("/alive", handleAlive);
 
   server.begin();
   Serial.println("HTTP server started.");
@@ -43,6 +47,16 @@ void setup()
 void loop()
 {
   server.handleClient();
+
+  if (millis() - lastAliveTime > timeout) {
+    motorSpeed = 0;
+    steeringAngle = 90;
+    analogWrite(ENA, 0);
+    digitalWrite(IN1, LOW);
+    digitalWrite(IN2, LOW);
+    myServo.write(steeringAngle);
+    return;
+  }
 
   if (motorSpeed > -30 && motorSpeed < 30)
   {
@@ -166,8 +180,6 @@ void handleRoot()
     }
   </style>
   <body>
-    <h1 style="text-align: center; padding: 2rem">LiPo CAR</h1>
-
     <div
       style="
         display: flex;
@@ -175,7 +187,7 @@ void handleRoot()
         align-items: center;
         padding-left: 10rem;
         padding-right: 10rem;
-        padding-top: 5rem;
+        padding-top: 10rem;
       "
     >
       <div style="display: flex; flex-direction: column; align-items: center">
@@ -211,6 +223,9 @@ void handleRoot()
         fetch("/setSteeringAngle?angle=" + angle);
         document.getElementById("steeringSlider").value = angle;
       }
+      setInterval(() => {
+        fetch("/alive");
+      }, 500);
     </script>
   </body>
 </html>
@@ -246,3 +261,10 @@ void handleSetSteeringAngle()
     server.send(400, "text/plain", "Invalid request");
   }
 }
+
+void handleAlive()
+{
+  lastAliveTime = millis();  // Update last alive time
+  server.send(200, "text/plain", "Alive signal received");
+}
+
