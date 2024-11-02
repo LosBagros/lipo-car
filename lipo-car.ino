@@ -67,9 +67,156 @@ void loop()
 }
 void handleRoot()
 {
-  // minified index.html using https://kangax.github.io/html-minifier/
-  String html = '<style>body{font-family:Arial,sans-serif;margin:0;padding:0}input[type=range]{height:49px;-webkit-appearance:none;margin:10px 0;width:100%}input[type=range]:focus{outline:0}input[type=range]::-webkit-slider-runnable-track{width:100%;height:20px;cursor:pointer;animate:.2s;box-shadow:1px 1px 1px #000;background:#3071a9;border-radius:14px;border:2px solid #000}input[type=range]::-webkit-slider-thumb{box-shadow:1px 1px 1px #000;border:2px solid #000;height:40px;width:40px;border-radius:50px;background:#fff;cursor:pointer;-webkit-appearance:none;margin-top:-12px}input[type=range]:focus::-webkit-slider-runnable-track{background:#3071a9}input[type=range]::-moz-range-track{width:100%;height:20px;cursor:pointer;animate:.2s;box-shadow:1px 1px 1px #000;background:#3071a9;border-radius:14px;border:2px solid #000}input[type=range]::-moz-range-thumb{box-shadow:1px 1px 1px #000;border:2px solid #000;height:40px;width:40px;border-radius:50px;background:#fff;cursor:pointer}input[type=range]::-ms-track{width:100%;height:20px;cursor:pointer;animate:.2s;background:0 0;border-color:transparent;color:transparent}input[type=range]::-ms-fill-lower{background:#3071a9;border:2px solid #000;border-radius:28px;box-shadow:1px 1px 1px #000}input[type=range]::-ms-fill-upper{background:#3071a9;border:2px solid #000;border-radius:28px;box-shadow:1px 1px 1px #000}input[type=range]::-ms-thumb{margin-top:1px;box-shadow:1px 1px 1px #000;border:2px solid #000;height:40px;width:40px;border-radius:50px;background:#fff;cursor:pointer}input[type=range]:focus::-ms-fill-lower{background:#3071a9}input[type=range]:focus::-ms-fill-upper{background:#3071a9}</style><h1 style=text-align:center;padding:2rem>LiPo CAR</h1><div style=display:flex;justify-content:space-between;align-items:center;padding-left:10rem;padding-right:10rem;padding-top:5rem><div style=display:flex;flex-direction:column;align-items:center><input id=steeringSlider max=180 min=0 oninput=updateSteeringAngle(this.value) style=width:300px type=range value=' " + String(steeringAngle) + " 'step=10></div><div style=display:flex;flex-direction:column;align-items:center><input id=speedSlider max=51 min=-51 oninput=updateSpeed(this.value) style=width:300px;transform:rotate(270deg) type=range value=' " + String(motorSpeed) + " '></div></div><script>function updateSpeed(e){fetch("/setSpeed?value="+5*e)}function updateSteeringAngle(e){fetch("/setSteeringAngle?angle="+e),document.getElementById("steeringSlider").value=e}</script>';
-  server.send(200, "text/html", html);
+  String html = R"====(
+    <html>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    input[type="range"] {
+      height: 49px;
+      -webkit-appearance: none;
+      margin: 10px 0;
+      width: 100%;
+    }
+    input[type="range"]:focus {
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 20px;
+      cursor: pointer;
+      animate: 0.2s;
+      box-shadow: 1px 1px 1px #000000;
+      background: #3071a9;
+      border-radius: 14px;
+      border: 2px solid #000000;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      box-shadow: 1px 1px 1px #000000;
+      border: 2px solid #000000;
+      height: 40px;
+      width: 40px;
+      border-radius: 50px;
+      background: #ffffff;
+      cursor: pointer;
+      -webkit-appearance: none;
+      margin-top: -12px;
+    }
+    input[type="range"]:focus::-webkit-slider-runnable-track {
+      background: #3071a9;
+    }
+    input[type="range"]::-moz-range-track {
+      width: 100%;
+      height: 20px;
+      cursor: pointer;
+      animate: 0.2s;
+      box-shadow: 1px 1px 1px #000000;
+      background: #3071a9;
+      border-radius: 14px;
+      border: 2px solid #000000;
+    }
+    input[type="range"]::-moz-range-thumb {
+      box-shadow: 1px 1px 1px #000000;
+      border: 2px solid #000000;
+      height: 40px;
+      width: 40px;
+      border-radius: 50px;
+      background: #ffffff;
+      cursor: pointer;
+    }
+    input[type="range"]::-ms-track {
+      width: 100%;
+      height: 20px;
+      cursor: pointer;
+      animate: 0.2s;
+      background: transparent;
+      border-color: transparent;
+      color: transparent;
+    }
+    input[type="range"]::-ms-fill-lower {
+      background: #3071a9;
+      border: 2px solid #000000;
+      border-radius: 28px;
+      box-shadow: 1px 1px 1px #000000;
+    }
+    input[type="range"]::-ms-fill-upper {
+      background: #3071a9;
+      border: 2px solid #000000;
+      border-radius: 28px;
+      box-shadow: 1px 1px 1px #000000;
+    }
+    input[type="range"]::-ms-thumb {
+      margin-top: 1px;
+      box-shadow: 1px 1px 1px #000000;
+      border: 2px solid #000000;
+      height: 40px;
+      width: 40px;
+      border-radius: 50px;
+      background: #ffffff;
+      cursor: pointer;
+    }
+    input[type="range"]:focus::-ms-fill-lower {
+      background: #3071a9;
+    }
+    input[type="range"]:focus::-ms-fill-upper {
+      background: #3071a9;
+    }
+  </style>
+  <body>
+    <h1 style="text-align: center; padding: 2rem">LiPo CAR</h1>
+
+    <div
+      style="
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-left: 10rem;
+        padding-right: 10rem;
+        padding-top: 5rem;
+      "
+    >
+      <div style="display: flex; flex-direction: column; align-items: center">
+        <input
+          type="range"
+          min="0"
+          max="180"
+          step="10"
+          value="90"
+          id="steeringSlider"
+          oninput="updateSteeringAngle(this.value)"
+          style="width: 300px"
+        />
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center">
+        <input
+          type="range"
+          min="-51"
+          max="51"
+          value="0"
+          id="speedSlider"
+          oninput="updateSpeed(this.value)"
+          style="width: 300px; transform: rotate(270deg)"
+        />
+      </div>
+    </div>
+
+    <script>
+      function updateSpeed(val) {
+        fetch("/setSpeed?value=" + val * 5);
+      }
+      function updateSteeringAngle(angle) {
+        fetch("/setSteeringAngle?angle=" + angle);
+        document.getElementById("steeringSlider").value = angle;
+      }
+    </script>
+  </body>
+</html>
+
+    )====";
+    server.send(200, "text/html", html);
 }
 
 void handleSetSpeed()
