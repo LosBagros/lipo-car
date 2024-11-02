@@ -16,7 +16,8 @@ int steeringAngle = 90;
 const char *ssid = "LiPo CAR";
 const char *password = "12345678";
 
-void setup() {
+void setup()
+{
   Serial.begin(115200);
 
   WiFi.softAP(ssid, password);
@@ -29,7 +30,7 @@ void setup() {
   pinMode(IN2, OUTPUT);
 
   myServo.attach(SERVO_PIN);
-  myServo.write(steeringAngle); 
+  myServo.write(steeringAngle);
 
   server.on("/", handleRoot);
   server.on("/setSpeed", handleSetSpeed);
@@ -39,65 +40,62 @@ void setup() {
   Serial.println("HTTP server started.");
 }
 
-void loop() {
+void loop()
+{
   server.handleClient();
 
-  if(motorSpeed > -30 && motorSpeed < 30) {
+  if (motorSpeed > -30 && motorSpeed < 30)
+  {
     analogWrite(ENA, 0);
     digitalWrite(IN1, LOW);
     digitalWrite(IN2, LOW);
     return;
   }
 
-  if (motorSpeed < 0) {
+  if (motorSpeed < 0)
+  {
     digitalWrite(IN1, LOW);
     digitalWrite(IN2, HIGH);
     analogWrite(ENA, abs(motorSpeed));
-  } else {
+  }
+  else
+  {
     digitalWrite(IN1, HIGH);
     digitalWrite(IN2, LOW);
     analogWrite(ENA, motorSpeed);
   }
 }
-void handleRoot() {
-  String html = "<html><body>";
-  html += "<h1>LiPo CAR</h1>";
-  html += "<div style='margin: 50px;'>";
-  html += "<label>Speed: </label><input type='range' min='-51' max='51' value='" + String(motorSpeed) + "' id='speedSlider' oninput='updateSpeed(this.value)' style='transform: rotate(270deg); width: 200px; margin-top: 50px;'>";
-  html += "</div>";
-  html += "<br><br>";
-  html += "<label>Steering Angle: </label><input type='range' min='0' max='' step='10'  value='" + String(steeringAngle) + "' id='steeringSlider' oninput='updateSteeringAngle(this.value)'>";
-  html += "<script>";
-  html += "function updateSpeed(val) {";
-  html += "  fetch('/setSpeed?value=' + val * 5);";
-  html += "}";
-  html += "function updateSteeringAngle(angle) {";
-  html += "  fetch('/setSteeringAngle?angle=' + angle);";
-  html += "  document.getElementById('steeringSlider').value = angle;";
-  html += "}";
-  html += "</script>";
-  html += "</body></html>";
+void handleRoot()
+{
+  // minified index.html using https://kangax.github.io/html-minifier/
+  String html = '<style>body{font-family:Arial,sans-serif;margin:0;padding:0}input[type=range]{height:49px;-webkit-appearance:none;margin:10px 0;width:100%}input[type=range]:focus{outline:0}input[type=range]::-webkit-slider-runnable-track{width:100%;height:20px;cursor:pointer;animate:.2s;box-shadow:1px 1px 1px #000;background:#3071a9;border-radius:14px;border:2px solid #000}input[type=range]::-webkit-slider-thumb{box-shadow:1px 1px 1px #000;border:2px solid #000;height:40px;width:40px;border-radius:50px;background:#fff;cursor:pointer;-webkit-appearance:none;margin-top:-12px}input[type=range]:focus::-webkit-slider-runnable-track{background:#3071a9}input[type=range]::-moz-range-track{width:100%;height:20px;cursor:pointer;animate:.2s;box-shadow:1px 1px 1px #000;background:#3071a9;border-radius:14px;border:2px solid #000}input[type=range]::-moz-range-thumb{box-shadow:1px 1px 1px #000;border:2px solid #000;height:40px;width:40px;border-radius:50px;background:#fff;cursor:pointer}input[type=range]::-ms-track{width:100%;height:20px;cursor:pointer;animate:.2s;background:0 0;border-color:transparent;color:transparent}input[type=range]::-ms-fill-lower{background:#3071a9;border:2px solid #000;border-radius:28px;box-shadow:1px 1px 1px #000}input[type=range]::-ms-fill-upper{background:#3071a9;border:2px solid #000;border-radius:28px;box-shadow:1px 1px 1px #000}input[type=range]::-ms-thumb{margin-top:1px;box-shadow:1px 1px 1px #000;border:2px solid #000;height:40px;width:40px;border-radius:50px;background:#fff;cursor:pointer}input[type=range]:focus::-ms-fill-lower{background:#3071a9}input[type=range]:focus::-ms-fill-upper{background:#3071a9}</style><h1 style=text-align:center;padding:2rem>LiPo CAR</h1><div style=display:flex;justify-content:space-between;align-items:center;padding-left:10rem;padding-right:10rem;padding-top:5rem><div style=display:flex;flex-direction:column;align-items:center><input id=steeringSlider max=180 min=0 oninput=updateSteeringAngle(this.value) style=width:300px type=range value=' " + String(steeringAngle) + " 'step=10></div><div style=display:flex;flex-direction:column;align-items:center><input id=speedSlider max=51 min=-51 oninput=updateSpeed(this.value) style=width:300px;transform:rotate(270deg) type=range value=' " + String(motorSpeed) + " '></div></div><script>function updateSpeed(e){fetch("/setSpeed?value="+5*e)}function updateSteeringAngle(e){fetch("/setSteeringAngle?angle="+e),document.getElementById("steeringSlider").value=e}</script>';
   server.send(200, "text/html", html);
 }
 
-
-void handleSetSpeed() {
-  if (server.hasArg("value")) {
+void handleSetSpeed()
+{
+  if (server.hasArg("value"))
+  {
     motorSpeed = server.arg("value").toInt();
     analogWrite(ENA, motorSpeed);
     server.send(200, "text/plain", "Speed set to " + String(motorSpeed));
-  } else {
+  }
+  else
+  {
     server.send(400, "text/plain", "Invalid request");
   }
 }
 
-
-void handleSetSteeringAngle() {
-  if (server.hasArg("angle")) {
+void handleSetSteeringAngle()
+{
+  if (server.hasArg("angle"))
+  {
     steeringAngle = server.arg("angle").toInt();
     myServo.write(steeringAngle);
     server.send(200, "text/plain", "Steering angle set to " + String(steeringAngle));
-  } else {
+  }
+  else
+  {
     server.send(400, "text/plain", "Invalid request");
   }
 }

@@ -1,0 +1,146 @@
+<html>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    input[type="range"] {
+      height: 49px;
+      -webkit-appearance: none;
+      margin: 10px 0;
+      width: 100%;
+    }
+    input[type="range"]:focus {
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 20px;
+      cursor: pointer;
+      animate: 0.2s;
+      box-shadow: 1px 1px 1px #000000;
+      background: #3071a9;
+      border-radius: 14px;
+      border: 2px solid #000000;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      box-shadow: 1px 1px 1px #000000;
+      border: 2px solid #000000;
+      height: 40px;
+      width: 40px;
+      border-radius: 50px;
+      background: #ffffff;
+      cursor: pointer;
+      -webkit-appearance: none;
+      margin-top: -12px;
+    }
+    input[type="range"]:focus::-webkit-slider-runnable-track {
+      background: #3071a9;
+    }
+    input[type="range"]::-moz-range-track {
+      width: 100%;
+      height: 20px;
+      cursor: pointer;
+      animate: 0.2s;
+      box-shadow: 1px 1px 1px #000000;
+      background: #3071a9;
+      border-radius: 14px;
+      border: 2px solid #000000;
+    }
+    input[type="range"]::-moz-range-thumb {
+      box-shadow: 1px 1px 1px #000000;
+      border: 2px solid #000000;
+      height: 40px;
+      width: 40px;
+      border-radius: 50px;
+      background: #ffffff;
+      cursor: pointer;
+    }
+    input[type="range"]::-ms-track {
+      width: 100%;
+      height: 20px;
+      cursor: pointer;
+      animate: 0.2s;
+      background: transparent;
+      border-color: transparent;
+      color: transparent;
+    }
+    input[type="range"]::-ms-fill-lower {
+      background: #3071a9;
+      border: 2px solid #000000;
+      border-radius: 28px;
+      box-shadow: 1px 1px 1px #000000;
+    }
+    input[type="range"]::-ms-fill-upper {
+      background: #3071a9;
+      border: 2px solid #000000;
+      border-radius: 28px;
+      box-shadow: 1px 1px 1px #000000;
+    }
+    input[type="range"]::-ms-thumb {
+      margin-top: 1px;
+      box-shadow: 1px 1px 1px #000000;
+      border: 2px solid #000000;
+      height: 40px;
+      width: 40px;
+      border-radius: 50px;
+      background: #ffffff;
+      cursor: pointer;
+    }
+    input[type="range"]:focus::-ms-fill-lower {
+      background: #3071a9;
+    }
+    input[type="range"]:focus::-ms-fill-upper {
+      background: #3071a9;
+    }
+  </style>
+  <body>
+    <h1 style="text-align: center; padding: 2rem">LiPo CAR</h1>
+
+    <div
+      style="
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-left: 10rem;
+        padding-right: 10rem;
+        padding-top: 5rem;
+      "
+    >
+      <div style="display: flex; flex-direction: column; align-items: center">
+        <input
+          type="range"
+          min="0"
+          max="180"
+          step="10"
+          value='" + String(steeringAngle) + "'
+          id="steeringSlider"
+          oninput="updateSteeringAngle(this.value)"
+          style="width: 300px"
+        />
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center">
+        <input
+          type="range"
+          min="-51"
+          max="51"
+          value='" + String(motorSpeed) + "'
+          id="speedSlider"
+          oninput="updateSpeed(this.value)"
+          style="width: 300px; transform: rotate(270deg)"
+        />
+      </div>
+    </div>
+
+    <script>
+      function updateSpeed(val) {
+        fetch("/setSpeed?value=" + val * 5);
+      }
+      function updateSteeringAngle(angle) {
+        fetch("/setSteeringAngle?angle=" + angle);
+        document.getElementById("steeringSlider").value = angle;
+      }
+    </script>
+  </body>
+</html>
